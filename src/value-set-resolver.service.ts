@@ -19,37 +19,20 @@ export class ValueSetResolverService {
     const valueSetKeys = this.recursivelyIdentifyValueSets(library);
     for (const valueSetKey of valueSetKeys) {
       const valSet = await this.fetchFhirValueSet(valueSetKey.id, apiKey);
-      valueSetObjectResult[valSet.id] = {};
-      valueSetObjectResult[valSet.id][valSet.version] =
-        await this.buildCqlExecutionValueSet(valSet, apiKey);
+      valueSetObjectResult[valueSetKey.id] = {};
+      valueSetObjectResult[valueSetKey.id][valSet.version] =
+        await this.buildCqlExecutionValueSet(valSet, valueSetKey.id, apiKey);
     }
     return valueSetObjectResult;
   }
 
-  private recursivelyIdentifyValueSets(library: Library) {
-    const valueSets: { id: string; name: string }[] = [];
-    if (!!library.valuesets) {
-      Object.values(library.valuesets).forEach((vs) =>
-        valueSets.push(vs as { id: string; name: string }),
-      );
-    }
-    if (!!library.includes) {
-      Object.values(library.includes).forEach((included) =>
-        valueSets.push(
-          ...this.recursivelyIdentifyValueSets(included as Library),
-        ),
-      );
-    }
-
-    return uniqBy(valueSets, 'id') as { id: string; name: string }[];
-  }
-
   private async buildCqlExecutionValueSet(
     valSet: IValueSet,
+    valSetOidUrl: string,
     apiKey: string,
   ): Promise<ValueSet> {
     const concepts = await this.recurseConcepts(valSet, apiKey);
-    return new ValueSet(valSet.id, valSet.version, concepts);
+    return new ValueSet(valSetOidUrl, valSet.version, concepts);
   }
 
   private async recurseConcepts(
@@ -73,6 +56,24 @@ export class ValueSetResolverService {
     return conceptsResponse;
   }
 
+  private recursivelyIdentifyValueSets(library: Library) {
+    const valueSets: { id: string; name: string }[] = [];
+    if (!!library.valuesets) {
+      Object.values(library.valuesets).forEach((vs) =>
+        valueSets.push(vs as { id: string; name: string }),
+      );
+    }
+    if (!!library.includes) {
+      Object.values(library.includes).forEach((included) =>
+        valueSets.push(
+          ...this.recursivelyIdentifyValueSets(included as Library),
+        ),
+      );
+    }
+
+    return uniqBy(valueSets, 'id') as { id: string; name: string }[];
+  }
+
   private async fetchFhirValueSet(url: string, apiKey: string) {
     const reqConfig = {
       method: 'GET',
@@ -88,7 +89,7 @@ export class ValueSetResolverService {
     return {
       Authorization:
         'Basic ' + Buffer.from('apiKey' + ':' + apiKey).toString('base64'),
-        Accept: 'application/json'
+      Accept: 'application/json',
     };
   }
 }

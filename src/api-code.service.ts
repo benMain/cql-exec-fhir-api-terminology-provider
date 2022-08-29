@@ -7,7 +7,7 @@ import {
 import { ValueSetResolverService } from './value-set-resolver.service';
 
 export class ApiCodeService implements TerminologyProvider {
-  private readonly valueSets: ValueSetObject;
+  readonly valueSets: ValueSetObject;
   constructor(
     private readonly valueSetResolverService: ValueSetResolverService,
   ) {
