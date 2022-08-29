@@ -173,5 +173,6 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "version": "1.0.0"
 }
