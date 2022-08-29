@@ -11,16 +11,16 @@
     "cql-exec-vsac",
     "cql-exec-fhir"
   ],
-  "homepage": "https://github.com/benMain/cql-exec-api-terminology-provider",
+  "homepage": "https://github.com/benMain/cql-exec-fhir-api-terminology-provider",
   "bugs": {
-    "url": "https://github.com/benMain/cql-exec-api-terminology-provider/issues"
+    "url": "https://github.com/benMain/cql-exec-fhir-api-terminology-provider/issues"
   },
   "files": [
     "dist"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/benMain/cql-exec-api-terminology-provider.git"
+    "url": "https://github.com/benMain/cql-exec-fhir-api-terminology-provider.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
