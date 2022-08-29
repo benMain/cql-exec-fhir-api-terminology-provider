@@ -81,7 +81,7 @@
             },
             {
               "type": "refactor",
-              "release": "patch"
+              "release": "minor"
             },
             {
               "type": "chore",

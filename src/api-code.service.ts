@@ -4,14 +4,27 @@ import {
   ValueSet,
   ValueSetObject,
 } from 'cql-execution';
+import { AxiosService } from './axios.service';
 import { ValueSetResolverService } from './value-set-resolver.service';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 
 export class ApiCodeService implements TerminologyProvider {
-  readonly valueSets: ValueSetObject;
+  private valueSets: ValueSetObject;
+  readonly valueSetResolverService: ValueSetResolverService;
+
   constructor(
-    private readonly valueSetResolverService: ValueSetResolverService,
+    private readonly shouldCache: boolean,
+    private readonly cacheLocation: string = `${__dirname}/cql-valueset-db.json`,
+    valueSetResolverService: ValueSetResolverService = null,
   ) {
+    this.valueSetResolverService =
+      valueSetResolverService ??
+      new ValueSetResolverService(new AxiosService());
+
     this.valueSets = {};
+    if (this.shouldCache) {
+      this.loadFromCache();
+    }
   }
 
   async ensureValueSetsAreLoadedForLibraryWithApiKey(
@@ -22,10 +35,14 @@ export class ApiCodeService implements TerminologyProvider {
       await this.valueSetResolverService.loadValueSetsForLibrary(
         library,
         apiKey,
+        this.valueSets,
       );
     Object.keys(fetchedValueSetObject).forEach((oid) => {
       this.valueSets[oid] = fetchedValueSetObject[oid];
     });
+    if(this.shouldCache) {
+      this.saveToCache()
+    }
   }
 
   findValueSets(oid: string) {
@@ -56,5 +73,15 @@ export class ApiCodeService implements TerminologyProvider {
       return b;
     });
     return oidValueSets[maxVersion];
+  }
+
+  loadFromCache() {
+      if (existsSync(this.cacheLocation)) {
+        this.valueSets = JSON.parse(readFileSync(this.cacheLocation, 'utf-8')) 
+      }
+  }
+
+  saveToCache() {
+    writeFileSync(this.cacheLocation, JSON.stringify(this.valueSets));
   }
 }
