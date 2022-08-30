@@ -5,3 +5,6 @@ The Code Service provided by [cql-exec](https://github.com/cqframework/cql-execu
 This was the basic goal of [cql-exec-vsac](https://github.com/cqframework/cql-exec-vsac). Unfortunately, they have not kept up with the changes to VSAC and (SVS API)[https://www.nlm.nih.gov/vsac/support/usingvsac/vsacsvsapiv2.html] is being deprecated in favor of the [Fhir Terminology Service](https://www.nlm.nih.gov/vsac/support/usingvsac/vsacfhirapi.html). That is why this library has been created.
 
 
+## Inbuilt Caching
+
+There is inbuilt caching since these servers are usually slow. 
