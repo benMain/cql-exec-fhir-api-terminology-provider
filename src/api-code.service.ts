@@ -40,8 +40,8 @@ export class ApiCodeService implements TerminologyProvider {
     Object.keys(fetchedValueSetObject).forEach((oid) => {
       this.valueSets[oid] = fetchedValueSetObject[oid];
     });
-    if(this.shouldCache) {
-      this.saveToCache()
+    if (this.shouldCache) {
+      this.saveToCache();
     }
   }
 
@@ -76,9 +76,22 @@ export class ApiCodeService implements TerminologyProvider {
   }
 
   loadFromCache() {
-      if (existsSync(this.cacheLocation)) {
-        this.valueSets = JSON.parse(readFileSync(this.cacheLocation, 'utf-8')) 
-      }
+    if (existsSync(this.cacheLocation)) {
+      const cachedValSets: ValueSetObject = JSON.parse(
+        readFileSync(this.cacheLocation, 'utf-8'),
+      );
+      Object.keys(cachedValSets).forEach((oid) => {
+        Object.keys(cachedValSets[oid]).forEach((version) => {
+          const valSet = cachedValSets[oid][version];
+          cachedValSets[oid][version] = new ValueSet(
+            oid,
+            version,
+            valSet.codes,
+          );
+        });
+      });
+      this.valueSets = cachedValSets;
+    }
   }
 
   saveToCache() {

@@ -32,7 +32,11 @@ describe('CodeService', () => {
 
     axiosService = new AxiosService();
     valueSetResolverService = new ValueSetResolverService(axiosService);
-    codeService = new ApiCodeService(true, `${__dirname}/value-set-db.json`, valueSetResolverService);
+    codeService = new ApiCodeService(
+      true,
+      `${__dirname}/value-set-db.json`,
+      valueSetResolverService,
+    );
   });
 
   it('should be defined', () => {

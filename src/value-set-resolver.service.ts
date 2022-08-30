@@ -19,7 +19,7 @@ export class ValueSetResolverService {
     const valueSetObjectResult: ValueSetObject = {};
     const valueSetKeys = this.recursivelyIdentifyValueSets(library);
     for (const valueSetKey of valueSetKeys) {
-      if(Object.keys(cachedValueSets).includes(valueSetKey.id)) {
+      if (Object.keys(cachedValueSets).includes(valueSetKey.id)) {
         continue;
       }
       const valSet = await this.fetchFhirValueSet(valueSetKey.id, apiKey);
